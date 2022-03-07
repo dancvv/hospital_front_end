@@ -40,7 +40,7 @@ export const constantRouterMap = [
   {
     path: '/hospSet',
     component: Layout,
-    redirect: '/example/list',
+    redirect: '/hospSet/list',
     name: '医院设置管理',
     meta: { title: '医院设置管理', icon: 'example' },
     children: [
@@ -55,6 +55,15 @@ export const constantRouterMap = [
         name: '医院设置添加',
         component: () => import('@/views/hospSet/add'),
         meta: { title: '医院设置添加', icon: 'tree' }
+      },
+      {
+        // 隐藏路由，采用的组件完全一致，属于组件复用
+        path: 'edit/:id',
+        name: 'Edu',
+        component: () => import('@/views/hospSet/add'),
+        meta: { title: '编辑', icon: 'tree' },
+        // 默认不显示该组件
+        hidden: true
       }
     ]
   },

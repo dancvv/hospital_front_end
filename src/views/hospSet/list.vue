@@ -54,6 +54,10 @@
             size="mini"
             icon="el-icon-delete"
             @click="lockHospSet(scope.row.id,1)">取消锁定</el-button>
+          <!--  一点击就会跳转到隐藏路由        -->
+          <router-link :to="'/hospSet/edit/'+scope.row.id">
+            <el-button type="primary" size="mini" icon="el-icon-edit"/>
+          </router-link>
         </template>
       </el-table-column>
     </el-table>
