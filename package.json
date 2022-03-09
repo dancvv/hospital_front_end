@@ -2,7 +2,7 @@
   "name": "yygh-admin",
   "version": "3.8.0",
   "license": "MIT",
-  "description": "尚医通管理平台",
+  "description": "医院管理平台",
   "author": "wangwei",
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",

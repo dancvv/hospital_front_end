@@ -2,6 +2,15 @@
   <div class="app-container">
     <!--    查出来的数据-->
     <!--   loda 加载子数的数据 -->
+    <div class="el-toolbar">
+      <div class="el-toolbar-body" style="justify-content: flex-start;">
+        <!--  使用a标签，使得跳转更为方便 -->
+        <a href="http://localhost:8202/admin/cmn/dict/exportData" targer="_blank">
+          <el-button type="text"><i class="fa fa-plus"/> 导出</el-button>
+        </a>
+      </div>
+    </div>
+
     <el-table
       :data="list"
       :load="getChildren"
@@ -49,6 +58,11 @@ export default {
     this.getDictList(1)
   },
   methods: {
+    // 导出数据字典
+    exportData() {
+    //  调用导出接口
+      window.location.href = 'http://localhost:8202/admin/cmn/dict/exportData'
+    },
     // 数据字典列表
     // 属性结构不显示是由于采用element UI 版本过高，必须切换为2.14.1
     getDictList(id) {
