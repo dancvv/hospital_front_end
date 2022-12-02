@@ -64,6 +64,12 @@ export const constantRouterMap = [
         meta: { title: '编辑', icon: 'tree' },
         // 默认不显示该组件
         hidden: true
+      },
+      {
+        path: 'hosp/list',
+        name: '医院列表',
+        component: () => import('@/views/hosp/list'),
+        meta: {title: '医院列表', icon: 'table'}
       }
     ]
   },
