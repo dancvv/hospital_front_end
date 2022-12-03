@@ -57,7 +57,7 @@
     </el-table-column>
 
     <el-table-column prop="hosname" label="医院名称"/>
-    <el-table-column prop="param.hostypeString" label="等级" width="90"/>
+    <el-table-column prop="param.hostype" label="等级" width="90"/>
     <el-table-column prop="param.fullAddress" label="详情地址"/>
     <el-table-column label="状态" width="80">
         <template slot-scope="scope">
@@ -67,6 +67,10 @@
     <el-table-column prop="createTime" label="创建时间"/>
 
     <el-table-column label="操作" width="230" align="center">
+        <template slot-scope="scope">
+            <el-button v-if="scope.row.status == 1" type="danger" size="mini" @click="updateStatus(scope.row.id, 0)">offline</el-button>
+            <el-button v-if="(scope.row.status == 0)" type="primary" size="mini" @click="updateStatus(scope.row.id, 1)">online</el-button>
+        </template>
     </el-table-column>
 </el-table>
 
@@ -107,6 +111,14 @@ export default {
 
     },
     methods:{
+        // update hosp status
+        updateStatus(id, status){
+            hospitalApi.updateStatus(id, status).then(
+                response => {
+                    this.fetchData(1)
+                }
+            )
+        },
         // 医院列表
         fetchData(page = 1){
             this.page = page
@@ -117,6 +129,7 @@ export default {
 
                     // 数据加载并绑定成功
                     this.listLoading = false
+                    console.log(response)
                 }
             )
         },

@@ -24,6 +24,13 @@ export default {
             url: `/admin/cmn/dict/findChildData/${dictCode}`,
             method: 'get'
         })
+    },
+    // update the hosp status
+    updateStatus(id, status){
+        return request({
+            url: `/admin/hosp/hospital/updateHospStatus/${id}/${status}`,
+            method: 'get'
+        })
     }
 
 
