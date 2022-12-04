@@ -1,38 +1,53 @@
 <template>
     <div class="app-container">
-        <div style="margin-bottom: 10px;font-size: 10px;">选择：{{ baseMap.hosname }}  /  {{ depname }}  /  {{ workDate }}</div>
+        <div style="margin-bottom: 10px;font-size: 10px;">选择：{{ baseMap.hosname }} / {{ depname }} / {{ workDate }}
+        </div>
         <div style="margin-bottom: 10px;font-size: 10px;">选择：</div>
-            <el-container style="height: 100%">
+        <el-container style="height: 100%">
             <el-aside width="200px" style="border: 1px silver solid">
                 <!-- 部门 -->
-                <el-tree
-                    :data="data"
-                    :props="defaultProps"
-                    :default-expand-all="true"
-                    @node-click="handleNodeClick"
-                    highlight-current="true"
+                <el-tree :data="data" :props="defaultProps" :default-expand-all="true" @node-click="handleNodeClick"
                     >
                 </el-tree>
             </el-aside>
             <el-main style="padding: 0 0 0 20px;">
                 <el-row style="width: 100%">
-                <!-- 排班日期 分页 -->
-                    <el-tag v-for="(item,index) in bookingScheduleList" :key="item.id" @click="selectDate(item.workDate, index)" :type="index == activeIndex ? '' : 'info'" style="height: 60px;margin-right: 5px;margin-right:15px;cursor:pointer;">
-                        {{ item.workDate }} {{ item.dayOfWeek }}<br/>
+                    <!-- 排班日期 分页 -->
+                    <el-tag v-for="(item, index) in bookingScheduleList" :key="item.id"
+                        @click="selectDate(item.workDate, index)" :type="index == activeIndex ? '' : 'info'"
+                        style="height: 60px;margin-right: 5px;margin-right:15px;cursor:pointer;">
+                        {{ item.workDate }} {{ item.dayOfWeek }}<br />
                         {{ item.availableNumber }} / {{ item.reservedNumber }}
                     </el-tag>
                     <!-- 分页 -->
-                    <el-pagination
-                        :current-page="page"
-                        :total="total"
-                        :page-size="limit"
-                        class="pagination"
-                        layout="prev, pager, next"
-                        @current-change="getPage">
+                    <el-pagination :current-page="page" :total="total" :page-size="limit" class="pagination"
+                        layout="prev, pager, next" @current-change="getPage">
                     </el-pagination>
                 </el-row>
                 <el-row style="margin-top: 20px;">
-                <!-- 排班日期对应的排班医生 -->
+                    <!-- 排班日期对应的排班医生 -->
+                    <el-table v-loading="listLoading" :data="scheduleList" border fit highlight-current-row>
+                        <el-table-column label="序号" width="60" align="center">
+                            <template slot-scope="scope">
+                                {{ scope.$index + 1 }}
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="职称" width="150">
+                            <template slot-scope="scope">
+                                {{ scope.row.title }} | {{ scope.row.docname }}
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="号源时间" width="80">
+                            <template slot-scope="scope">
+                                {{ scope.row.workTime == 0 ? "上午" : "下午" }}
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="reservedNumber" label="可预约数" width="80" />
+                        <el-table-column prop="availableNumber" label="剩余预约数" width="100" />
+                        <el-table-column prop="amount" label="挂号费(元)" width="90" />
+                        <el-table-column prop="skill" label="擅长技能" />
+                    </el-table>
+
                 </el-row>
             </el-main>
         </el-container>
@@ -41,7 +56,7 @@
 <script>
 import hospApi from '@/api/hosp'
 export default {
-    data(){
+    data() {
         return {
             data: [],
             defaultProps: {
@@ -59,27 +74,41 @@ export default {
 
             page: 1, // 当前页
             limit: 7, // 每页个数
-            total: 0 // 总页码
+            total: 0, // 总页码
+
+            // 表格加载
+            listLoading: true,
+
+            scheduleList:[] //排班详情
 
         }
     },
-    created(){
+    created() {
         this.hoscode = this.$route.params.hoscode
         this.workDate = this.getCurDate()
         this.fetchData()
     },
-    methods:{
-        fetchData(){
+    methods: {
+        // 查询排班详情
+        getDetailSchedule(){
+            hospApi.getScheduleDetail(this.hoscode, this.depcode, this.workDate)
+                .then(response => {
+                    this.scheduleList = response.data
+                })
+        },
+        fetchData() {
             hospApi.getDepartmentByHoscode(this.hoscode).then(
                 response => {
                     this.data = response.data
                     // 默认选中第一个
-                    if(this.data.length > 0){
+                    if (this.data.length > 0) {
                         this.depcode = this.data[0].children[0].depcode
                         this.depname = this.data[0].children[0].depname
 
                         this.getPage()
                     }
+                    // // 调用查询排班详情
+                    // this.getDetailSchedule()
                 }
             )
         },
@@ -91,7 +120,7 @@ export default {
         },
 
         getScheduleRule() {
-        hospApi.getScheduleRule(this.page, this.limit, this.hoscode, this.depcode).then(response => {
+            hospApi.getScheduleRule(this.page, this.limit, this.hoscode, this.depcode).then(response => {
                 this.bookingScheduleList = response.data.bookingScheduleRuleVosList
 
                 this.total = response.data.total
@@ -101,9 +130,14 @@ export default {
 
                 // 分页后workDate=null，默认选中第一个
                 if (this.workDate == null) {
-                    console.log(this.bookingScheduleList)
                     this.workDate = this.bookingScheduleList[0].workDate
+                    // this.workDate = this.bookingScheduleList.length != 0 ? this.bookingScheduleList[0].workDate : null;
+                    // console.log(this.workDate)
                 }
+
+                // 调用查询排班详情
+                this.getDetailSchedule()
+                this.listLoading = false
             })
         },
 
@@ -119,6 +153,9 @@ export default {
         selectDate(workDate, index) {
             this.workDate = workDate
             this.activeIndex = index
+
+            // 查询排班详情
+            this.getDetailSchedule()
         },
 
         getCurDate() {
