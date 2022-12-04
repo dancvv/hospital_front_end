@@ -190,5 +190,13 @@ export default {
   },
 };
 </script>
-<style scoped>
+<style>
+  .el-tree-node.is-current > .el-tree-node__content {
+    background-color: #409EFF !important;
+    color: white;
+   }
+
+  .el-checkbox__input.is-checked+.el-checkbox__label {
+    color: black;
+   }
 </style>
