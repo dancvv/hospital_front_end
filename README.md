@@ -1,4 +1,5 @@
-# vue-admin-template
+# 项目文档
+尚医通前端项目，后台管理系统，完善了课程中没有完成的订单管理模块
 
 > A minimal vue admin template with Element UI & axios & iconfont & permission control & lint
 
