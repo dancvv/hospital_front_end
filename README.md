@@ -1,5 +1,5 @@
 # 项目文档
-尚医通前端项目，后台管理系统，完善了课程中没有完成的订单管理模块
+尚医通前端项目，后台管理系统，完善了课程中没有完成的订单管理模块;这个系列的前端项目推荐使用node 12版本，高版本的node容易出问题。
 
 > A minimal vue admin template with Element UI & axios & iconfont & permission control & lint
 
